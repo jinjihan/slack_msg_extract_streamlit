@@ -23,30 +23,15 @@ def get_workspaces_from_toml() -> Dict[str, str]:
     return workspaces
 
 
-def get_workspaces_from_ui() -> Dict[str, str]:
-    """UI에서 입력된 워크스페이스 정보를 가져옴"""
-    workspaces = st.session_state.get("workspaces", {})
-    return workspaces
-
-
 def get_workspaces() -> Dict[str, str]:
-    """워크스페이스 정보를 가져옴 (TOML 우선, 없으면 UI 입력 사용)"""
-    # TOML에서 먼저 시도
-    toml_workspaces = get_workspaces_from_toml()
+    """워크스페이스 정보를 가져옴 (TOML에서만)"""
+    workspaces = get_workspaces_from_toml()
     
-    # TOML에 워크스페이스가 있으면 사용
-    if toml_workspaces:
-        return toml_workspaces
-    
-    # TOML에 없으면 UI 입력 사용
-    ui_workspaces = get_workspaces_from_ui()
-    
-    # 둘 다 없으면 에러
-    if not ui_workspaces:
-        st.error("워크스페이스 토큰을 입력하거나 .streamlit/secrets.toml에 설정해주세요.")
+    if not workspaces:
+        st.error(".streamlit/secrets.toml에 워크스페이스 설정이 필요합니다.")
         st.stop()
     
-    return ui_workspaces
+    return workspaces
 
 
 def validate_slack_token(token: str) -> bool:
