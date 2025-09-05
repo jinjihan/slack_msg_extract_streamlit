@@ -7,10 +7,19 @@ import streamlit as st
 from config import get_workspaces, validate_channel_input, get_date_range
 from slack_client import list_channels
 from data_processor import build_unified_df, download_files_zip, create_excel_buffer
+from auth import is_authenticated, show_login_form, show_logout_button, require_auth
 
 # ------ UI ------
 st.set_page_config(page_title="슬랙 채널 메세지 추출", layout="wide")
+
+# 인증 확인
+if not is_authenticated():
+    show_login_form()
+    st.stop()
+
+# 인증된 사용자만 접근 가능
 st.title("슬랙 채널 메세지 추출")
+show_logout_button()
 
 # 워크스페이스 설정
 WORKSPACES = get_workspaces()
